@@ -1,9 +1,12 @@
 ;;; org-beautify-theme.el --- A sub-theme to make org-mode more beautiful.
 ;; Copyright (C) 2014-2017 Jonathan Arkell
+;; Copyright (C) 2021 Lucas Fillon
 
 ;; Author: Jonathan Arkell <jonnay@jonnay.net>
+;; Author fork: Lucas Fillon <lucas_fillon@protonmail.com>
 ;; Version: 0.4
 ;; Created: 5 Oct 2012
+;; forked: 21 apr 2021x
 ;; Keywords: org theme
 
 ;; This file is not part of GNU Emacs.
@@ -23,9 +26,9 @@
 
 ;;; Commentary:
 ;; #+title: Read Me
-;; 
+;;
 ;; [[./screenshot.png]]
-;; 
+;;
 ;; * Making Org-mode Beautiful
 ;; ** This theme is dedicated to my wife Shell
 ;;   Who—in her beauty, her love, and her love for beauty—has shown me
@@ -39,18 +42,18 @@
 ;;   Load this theme over top your existing theme, and you should be
 ;;   golden.  If you find any incompatibilities, let me know with what
 ;;   theme and I will try and fix it.
-;; 
+;;
 ;;   When loading a whole new theme overtop, org-beautify-theme will
 ;;   still be active with the old theme.  Just unload org-beautify-theme
 ;;   and then reload it, and everything will be fine again.
-;; 
+;;
 ;;   If you still get really ugly headlines, customize the
 ;;   ~org-beautify-theme-use-box-hack~ variable and set it to nil (false).
-;; 
+;;
 ;; * Changelog
 ;;    - v0.4 :: [2017-09-08]
-;;      - Add org-beautify-theme-use-box-hack to allow the user to 
-;;        fix ugly boxes.  
+;;      - Add org-beautify-theme-use-box-hack to allow the user to
+;;        fix ugly boxes.
 ;;    - v0.3.2 :: [2017-08-29]
 ;;      - Update License
 ;;    - v0.3.1 :: [2016-10-19]
@@ -65,7 +68,7 @@
 ;;      - Fix checkboxes
 ;;    - v0.1 :: First Release
 ;;      - Make the colors suck a lot less, and the buffers look a lot nicer.
-;; 
+;;
 
 ;;; Code:
 
@@ -77,8 +80,19 @@ Note that this has a side effect that can make the theme look
 really bad under some circumstances."
   :type 'boolean)
 
-(let* ((sans-font (cond ((x-list-fonts "Lucida Grande") '(:font "Lucida Grande"))
-                        ((x-list-fonts "Verdana") '(:font "Verdana"))
+(defcustom org-beautify-theme-list-fonts '("Source Code Pro" "Cantarell")
+  "List of fonts to try for headlines"
+  :type '(string))
+
+(defun org-beautify-theme-search-fonts-from-name-list (list)
+  "Search if a font is installed on system. LIST is a list of fonts names."
+  (dolist (name list ret)
+    (if (x-list-fonts name)
+        (setq ret `(:font ,name)))))
+
+
+(let* ((sans-font (cond ((org-beautify-theme-search-fonts-from-name-list org-beautify-theme-list-fonts))
+                        ((x-list-fonts "Courier Code") '(:font "Courier Code"))
                         ((x-family-fonts "Sans Serif") '(:family "Sans Serif"))
                         (nil (warn "Cannot find a Sans Serif Font.  Please report at: https://github.com/jonnay/org-beautify-theme/issues"))))
        (base-font-color (face-foreground 'default  nil 'default))
